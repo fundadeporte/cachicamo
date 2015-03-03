@@ -7,11 +7,11 @@
 
   </div>
   <div>
-  <h2>Maestro años</h2>
+  <h2>Maestro a&#241;os</h2>
   
   <table>
     <tr>
-      <th>año</th>
+      <th>a&#241;o</th>
       <th>inicia el</th>
       <th>culmina el</th>
       <th>status</th>
