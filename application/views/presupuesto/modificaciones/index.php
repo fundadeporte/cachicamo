@@ -11,7 +11,8 @@
   
   <table>
     <tr>
-      <th>Nro de modificación</th>
+      <th>Nro de modificaci&#243;
+n</th>
       <th>Concepto</th>
       <th>Fecha proceso</th>
       <th>Hora proceso</th>
