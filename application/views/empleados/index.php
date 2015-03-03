@@ -13,7 +13,7 @@
 
   </div>
   <div>
-  <h2>Nomina <?php echo  $this->uri->segment(2, 0); ?></h2>
+  <h2>Nomina </h2>
   
   <table>
     <tr>
