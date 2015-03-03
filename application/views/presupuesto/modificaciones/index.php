@@ -7,7 +7,7 @@
 
   </div>
   <div>
-  <h2>Modificaciones en el año</h2>
+  <h2>Modificaciones en el a&#241;o</h2>
   
   <table>
     <tr>
