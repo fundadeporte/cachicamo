@@ -12,7 +12,7 @@
   <table>
     <tr>
       <th>#</th>
-      <th>Año</th>
+      <th>A&#241;o</th>
       <th>Mes</th>
       <th>Monto</th>
       <th>Asignaciones</th>
