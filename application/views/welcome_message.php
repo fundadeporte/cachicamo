@@ -76,6 +76,7 @@
 	<a href="<?php echo site_url("empleado/"); ?>">Empleados</a>
 	<?php echo anchor('departamento', 'Departamentos', 'title="Ir pagina principal"'); ?>
 	<?php echo anchor('nominas', 'Nominas', 'title="Ir pagina principal"'); ?>
+	<?php echo anchor('presupuesto', 'Presupuesto', 'title="Ir pagina principal"'); ?>
 	<div id="body">
 		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
 
