@@ -40,4 +40,5 @@
     <?php endforeach; else:?>
     <?php endif;?>
   </table>
+  <?php echo "fecha:"; ?>
   </div>
