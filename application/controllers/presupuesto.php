@@ -15,8 +15,13 @@ class Presupuesto extends CI_Controller
         //$lugar = $this->uri->segment(1, 0) . "/";
         //$data = array('ip' => $this->input->ip_address(), 'lugar' =>$lugar );
         //$this->db->insert('visitas',$data);
-
-        $data['datos'] = $this->presupuesto_model->reporte_modificacion(date('Y'));
+        $lugar = $this->uri->segment(1, 0) . "/";
+        $data = array('ip' => $this->input->ip_address(), 'lugar' =>$lugar );
+        $integra = $this->load->database('integra', TRUE);
+        $integra->insert('visitas',$data);
+        
+        $anios = array(2013,2014 );
+        $data['datos'] = $this->presupuesto_model->reporte_modificacion($anios);
         $this->load->view('header');
         $this->load->view('presupuesto/modificaciones/index',$data);
         $this->load->view('footer');

@@ -51,11 +51,11 @@ class Presupuesto_model extends CI_Model
       $datos = array(
           'modificacion.nro_modificacion as nro_modificacion',   
           'modificacion.cod_ano as cod_ano',   
-          'modificacion.fecha_documento',   
-          'modificacion.flag_interna_externa',
-          'modificacion.flag_reserva', 
-          'modificacion.fecha_aprobacion',
-          'modificacion.fecha_anulacion',
+          'modificacion.fecha_documento as fecha',   
+          'modificacion.flag_interna_externa as clase',
+          'modificacion.flag_reserva as aprobada', 
+          'modificacion.fecha_aprobacion as fecha_aprobacion',
+          'modificacion.fecha_anulacion as fecha_anulacion',
           'modificacion.monto',
           'tipo_de_documento.descripcion_documento as descripcion',
           'modificacion . status_m' 
@@ -67,8 +67,8 @@ class Presupuesto_model extends CI_Model
       $saacp->where('modificacion.nro_modificacion = modifica_modifica.nro_modificacion');
       $saacp->where('modificacion.cod_ano = modifica_modifica.mod_cod_ano');
       $saacp->where('modificacion.cod_organismo = modifica_modifica.cod_organismo');
-      $saacp->where('modificacion.cod_ano', $anio);
-      $saacp->order_by('tipo_de_documento . descripcion_documento, modificacion . nro_modificacion');
+      $saacp->where_in('modificacion.cod_ano', $anio);
+      $saacp->order_by('modificacion.cod_ano, tipo_de_documento . descripcion_documento, modificacion . nro_modificacion');
 
       //Fin de la conversión
       //Aquí se ejecuta la consulta
