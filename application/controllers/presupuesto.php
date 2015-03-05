@@ -16,18 +16,18 @@ class Presupuesto extends CI_Controller
         //$data = array('ip' => $this->input->ip_address(), 'lugar' =>$lugar );
         //$this->db->insert('visitas',$data);
 
-        $data['query'] = $this->presupuesto_model->todas_las_modificaciones(2014);
+        $data['datos'] = $this->presupuesto_model->reporte_modificacion(date('Y'));
         $this->load->view('header');
         $this->load->view('presupuesto/modificaciones/index',$data);
         $this->load->view('footer');
     }
     
-    function ver($codigo_departamento,$sede)
+    function ver($anio,$nro_modificacion)
     {
-        $data = $this->departamento_model->ver($codigo_departamento,$sede);
+        $data['datos'] = $this->presupuesto_model->modificacion_detallada($anio,$nro_modificacion);
         //print_r($data);
         $this->load->view('header');
-        $this->load->view('departamentos/ver',$data);
+        $this->load->view('presupuesto/modificaciones/ver',$data);
         $this->load->view('footer');
     }
     

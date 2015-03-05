@@ -11,24 +11,23 @@
   
   <table>
     <tr>
-      <th>Nro de modificaci&#243;
-n</th>
+      <th>Nro de modificaci&#243;n</th>
       <th>Concepto</th>
       <th>Fecha proceso</th>
-      <th>Hora proceso</th>
+      <th>Fecha aprobacion</th>
       <th>Estatus</th>
       <th columns="3">acciones</th>
     </tr>
-    <?php if($query):foreach($query as $anio):?>
+    <?php if($datos):foreach($datos as $modificacion):?>
     <tr>
-      <td><?php echo $anio->nro_modificacion;?></td>
-      <td><?php echo $anio->concepto;?></td>
-      <td><?php echo $anio->fecha_proceso;?></td>
-      <td><?php echo $anio->hora_proceso;?></td>
-      <td><?php echo $anio->status_m;?></td>
-      <td><?php echo anchor('presupuesto/modificaciones/' . $anio->nro_modificacion, 'Editar', 'title="Editar gaceta"'); ?></td>
-      <td><?php echo anchor('presupuesto/modificaciones' . $anio->nro_modificacion, 'Ver', 'title="Ver año"'); ?></td>
-      <td><?php echo anchor('presupuesto/modificaciones' . $anio->nro_modificacion, 'Editar', 'title="Eliminar gaceta"'); ?></td>
+      <td><?php echo $modificacion['nro_modificacion'];?></td>
+      <td><?php echo $modificacion['descripcion'];?></td>
+      <td><?php echo $modificacion['fecha_documento'];?></td>
+      <td><?php echo $modificacion['fecha_aprobacion'];?></td>
+      <td><?php echo $modificacion['status_m'];?></td>
+      <td><?php echo anchor('presupuesto/ver/' . $modificacion['cod_ano']. '/' . $modificacion['nro_modificacion'], 'Ver', 'title="Ver detalles"'); ?></td>
+      <td><?php //echo anchor('presupuesto/modificaciones' . $anio->nro_modificacion, 'Ver', 'title="Ver año"'); ?></td>
+      <td><?php //echo anchor('presupuesto/modificaciones' . $anio->nro_modificacion, 'Editar', 'title="Eliminar gaceta"'); ?></td>
     </tr>
     <?php endforeach; else:?>
     <?php endif;?>
