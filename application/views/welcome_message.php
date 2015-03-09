@@ -67,7 +67,7 @@
 <body>
 
 <div id="container">
-	<h1>Bienvenido al Vista web del SAACP!</h1>
+	<h1>Bienvenido al Sistema Cachicamo!</h1>
 	
 	<?php 
 	$this->load->helper('url');
@@ -77,6 +77,7 @@
 	<?php echo anchor('departamento', 'Departamentos', 'title="Ir pagina principal"'); ?>
 	<?php echo anchor('nominas', 'Nominas', 'title="Ir pagina principal"'); ?>
 	<?php echo anchor('presupuesto', 'Presupuesto', 'title="Ir pagina principal"'); ?>
+	<?php echo anchor('administracion', 'Administracion', 'title="Ir consultas para adminitracion"'); ?>
 	<div id="body">
 		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
 
