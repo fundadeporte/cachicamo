@@ -92,7 +92,7 @@ class Empleado_model extends CI_Model
         $integra->where('empleado.codigo_titulo = titulo.codigo_titulo' );
         $integra->where('empleado.codigo_departamento = departamentos.codigo_departamento');
         $integra->where('empleado.cod_sede = departamentos.cod_sede');
-        $excluir = array(14382287, 7517267, 8837379, 17905881, 7457702, 12474871,3116442);
+        $excluir = array(17031718, 17277710, 6828983);
         $estatus = array(1,2);
         $integra->where_not_in('cedula', $excluir);
         $integra->where_in('status_nomina', $estatus);

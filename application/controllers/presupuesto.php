@@ -11,17 +11,14 @@ class Presupuesto extends CI_Controller
  
     function index()
     {
-        //this function will retrive all entry in the database
-        //$lugar = $this->uri->segment(1, 0) . "/";
-        //$data = array('ip' => $this->input->ip_address(), 'lugar' =>$lugar );
-        //$this->db->insert('visitas',$data);
+
         $lugar = $this->uri->segment(1, 0) . "/";
         $data = array('ip' => $this->input->ip_address(), 'lugar' =>$lugar );
         $integra = $this->load->database('integra', TRUE);
         $integra->insert('visitas',$data);
         
-        $anios = array(2013,2014 );
-        $data['datos'] = $this->presupuesto_model->reporte_modificacion($anios);
+        $an = array(2013,2014,2015 );
+        $data['datos'] = $this->presupuesto_model->reporte_modificacion($an);
         $this->load->view('header');
         $this->load->view('presupuesto/modificaciones/index',$data);
         $this->load->view('footer');
@@ -29,11 +26,19 @@ class Presupuesto extends CI_Controller
     
     function ver($anio,$nro_modificacion)
     {
-        $data['datos'] = $this->presupuesto_model->modificacion_detallada($anio,$nro_modificacion);
+        $data['cabecera'] = $this->presupuesto_model->cabecera_modificacion($anio,$nro_modificacion);
+        $data['detalles'] = $this->presupuesto_model->modificacion_detalles($anio,$nro_modificacion);
         //print_r($data);
         $this->load->view('header');
-        $this->load->view('presupuesto/modificaciones/ver',$data);
+        $this->load->view('presupuesto/modificaciones/cabecera',$data);
+        $this->load->view('presupuesto/modificaciones/detalle',$data);
+        //$this->load->view('presupuesto/modificaciones/ver',$data);
         $this->load->view('footer');
+    }
+
+    function ver_modificacion($anio, $nro_modificacion)
+    {
+
     }
     
    

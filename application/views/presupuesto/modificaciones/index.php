@@ -18,6 +18,7 @@
       <th>Aprobada</th>
       <th>Anulada</th>
       <th>Monto</th>
+      <th>Descripcion</th>
     </tr>
     <?php $i = 0; ?>
     <?php if($datos):foreach($datos as $modificacion):?>
@@ -35,7 +36,8 @@
       ?></td>
       <td><?php echo $modificacion['fecha_aprobacion'];?></td>
       <td><?php echo $modificacion['fecha_anulacion'];?></td>
-      <td><?php echo $modificacion['monto'];?></td>
+      <td><?php echo str_replace(".", ",", $modificacion['monto']);?></td>
+      <td><?php echo $modificacion['descripcion']; ?></td>
       <?php $i=$i+$modificacion['monto']; ?>
     </tr>
     <?php endforeach; else:?>
