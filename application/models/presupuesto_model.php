@@ -58,7 +58,8 @@ class Presupuesto_model extends CI_Model
           'modificacion.fecha_anulacion as fecha_anulacion',
           'modificacion.monto',
           'tipo_de_documento.descripcion_documento as descripcion',
-          'modificacion . status_m' 
+          'modificacion . status_m', 
+          'modificacion.tipo_documento as tipo' 
         );
       $saacp->select($datos);
       $saacp->from('modificacion, tipo_de_documento, modifica_modifica');
@@ -68,7 +69,7 @@ class Presupuesto_model extends CI_Model
       $saacp->where('modificacion.cod_ano = modifica_modifica.mod_cod_ano');
       $saacp->where('modificacion.cod_organismo = modifica_modifica.cod_organismo');
       $saacp->where_in('modificacion.cod_ano', $anio);
-      $saacp->order_by('modificacion.cod_ano , tipo_de_documento . descripcion_documento, modificacion . nro_modificacion');
+      $saacp->order_by('modificacion.cod_ano , clase ,tipo_de_documento . descripcion_documento, modificacion . nro_modificacion');
 
       //Fin de la conversión
       //Aquí se ejecuta la consulta
@@ -77,7 +78,7 @@ class Presupuesto_model extends CI_Model
       return $query;
     }
 
-    function cabecera_modificacion($anio,$nro_modificacion)
+    function cabecera_modificacion($anio, $nro_modificacion, $tipo)
     {
       /*
       SELECT   modificacion . cod_organismo,   
@@ -125,13 +126,15 @@ class Presupuesto_model extends CI_Model
       $saacp->from('modificacion');
       $saacp->where_in('modificacion.cod_ano', $anio);
       $saacp->where_in('modificacion.nro_modificacion', $nro_modificacion);
+      $saacp->where('tipo_documento',$tipo); 
       //Fin de la conversión
       //Aquí se ejecuta la consulta
       $query = $saacp->get()->result_array();
       //Aquí retornan los datos al controlador
       return $query;
     }
- function modificacion_detalles($anio, $nro_modificacion)
+ 
+    function modificacion_detalles($anio, $nro_modificacion,$tipo)
     {
         /*
         SELECT   
@@ -232,13 +235,115 @@ class Presupuesto_model extends CI_Model
           $saacp->where('presupuesto . ordinal_presupuesto = modificacion_partida . ordinal_presupuesto');
           $saacp->where('presupuesto.cod_ano', $anio);
           $saacp->where('modificacion.nro_modificacion', $nro_modificacion);
-          $saacp->order_by('programa, accion_especifica, cuenta');
+          $saacp->where('modificacion_partida.tipo_documento',$tipo); 
+          $saacp->order_by('programa, accion_especifica,signo, cuenta');
           //Aquí se ejecuta la consulta
             $query = $saacp->get()->result_array();
           //Aquí retornan los datos al controlador
             return $query;
     }
 
+    function modificacion_padres($anio,$nro_modificacion,$tipo)
+    {
+      /*
+        select 
+          modificacion_partida.signo,
+          modificacion_partida.cod_programa,
+          modificacion_partida.cod_act_obra, 
+          descripcion, 
+          sum(monto) as monto 
+        from 
+          modificacion_partida, actividad_obra 
+        where 
+          modificacion_partida.cod_ano = 2013 and 
+          modificacion_partida.nro_modificacion = 227 and 
+          modificacion_partida.tipo_documento = 'MOTP' and
+          modificacion_partida.cod_ano = actividad_obra.cod_ano and
+          modificacion_partida.cod_programa = actividad_obra.cod_programa and
+          modificacion_partida.cod_subprograma = actividad_obra.cod_subprograma and
+          modificacion_partida.cod_act_obra = actividad_obra.cod_act_obra
+        group by
+          modificacion_partida.signo,modificacion_partida.cod_programa, modificacion_partida.cod_act_obra,descripcion
+        order by
+          modificacion_partida.signo,modificacion_partida.cod_programa,modificacion_partida.cod_act_obra,descripcion
+
+      */
+      $saacp = $this->load->database('saacp', TRUE);
+
+      $datos = array(
+          'modificacion_partida.signo',
+          'modificacion_partida.cod_programa',
+          'modificacion_partida.cod_act_obra', 
+          'descripcion', 
+          'sum(monto) as monto '
+        );
+      $saacp->select($datos);
+      $saacp->from('modificacion_partida, actividad_obra');    
+      $saacp->where('modificacion_partida.cod_ano',$anio);  
+      $saacp->where('modificacion_partida.nro_modificacion',$nro_modificacion);  
+      $saacp->where('tipo_documento',$tipo); 
+      $saacp->where('modificacion_partida.cod_ano = actividad_obra.cod_ano ');
+      $saacp->where('modificacion_partida.cod_programa = actividad_obra.cod_programa ');
+      $saacp->where('modificacion_partida.cod_subprograma = actividad_obra.cod_subprograma ');
+      $saacp->where('modificacion_partida.cod_act_obra = actividad_obra.cod_act_obra');
+      //$saacp->where('substr(cod_cuenta,4,2) <> 18');
+      $saacp->group_by(array('modificacion_partida.signo','modificacion_partida.cod_programa', 'modificacion_partida.cod_act_obra','descripcion'));
+      $saacp->order_by('modificacion_partida.signo,modificacion_partida.cod_programa, modificacion_partida.cod_act_obra,descripcion');
+
+      $query = $saacp->get()->result_array();
+          //Aquí retornan los datos al controlador
+      return $query;
+
+    }
+
+    function modificacion_hijos($anio, $nro_modificacion, $tipo)
+    {
+      /*
+        select 
+          signo,
+          cod_programa,
+          cod_act_obra, 
+          substr(modificacion_partida.cod_cuenta,1,3) as cuenta,
+          substr(modificacion_partida.cod_cuenta,4,2) as hija,
+          descripcion_cuenta as descripcion,
+          sum(monto) as monto 
+        from 
+          modificacion_partida, plan_cuentas 
+        where 
+          cod_ano = 2013 and 
+          nro_modificacion = 227 
+          and tipo_documento = 'MOTP' 
+          and modificacion_partida.cod_cuenta = plan_cuentas.cod_cuenta
+        group by
+          signo,cod_programa, cod_act_obra,cuenta,hija, descripcion
+        order by
+          signo,cod_programa,cod_act_obra,cuenta,hija, descripcion
+      */
+      $saacp = $this->load->database('saacp', TRUE);
+
+      $datos = array(
+        'signo',
+        'cod_programa',
+        'cod_act_obra', 
+        'substr(modificacion_partida.cod_cuenta,1,3) as cuenta',
+        'substr(modificacion_partida.cod_cuenta,4,2) as hija',
+        'descripcion_cuenta as descripcion',
+        'sum(monto) as monto '
+        );
+      $saacp->select($datos);
+      $saacp->from('modificacion_partida, plan_cuentas');    
+      $saacp->where('cod_ano',$anio);  
+      $saacp->where('nro_modificacion',$nro_modificacion);  
+      $saacp->where('cod_ano',$anio);  
+      $saacp->where('tipo_documento',$tipo); 
+      $saacp->where('modificacion_partida.cod_cuenta = plan_cuentas.cod_cuenta');
+      $saacp->group_by(array('signo','cod_programa','cod_act_obra', 'cuenta', 'hija', 'descripcion'));
+      $saacp->order_by('signo, cod_programa, cod_act_obra, cuenta, hija, descripcion');
+
+      $query = $saacp->get()->result_array();
+          //Aquí retornan los datos al controlador
+      return $query;
+    }
 /* End of file presupuesto_model.php */
 /* Location: ./application/models/presupuesto_model.php */
 
