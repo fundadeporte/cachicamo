@@ -323,6 +323,42 @@ group by concepto, monto_concepto
         $integra->order_by("concepto, monto_concepto");
         $datos = $integra->get()->result_array();
         return $datos;
+
+        }
+
+/*function constacia_empleados ()
+{
+
+$integra = $this->load->database('integra', TRUE);
+        $datos = array(
+
+           'empleado.apellido_uno',  
+           'empleado.apellido_dos',   
+           'empleado.nombre_uno',   
+           'empleado.nombre_dos',   
+           'empleado.cedula',   
+           'cargo.cargo',   
+           'empleado.fecha_ingreso',   
+           'empleado.sueldo',   
+           'movimientos.monto_concepto'  
+        );
+
+        $integra->select($datos);
+        $integra->from ('empleado, movimientos, cargo');  
+        $integra->where('movimientos.cod_institucion = empleado.cod_institucion');  
+        $integra->where('movimientos.cod_sede = empleado.cod_sede');   
+        $integra->where('movimientos.cedula = empleado.cedula');   
+        $integra->where('movimientos.cod_institucion = cargo.cod_institucion');   
+        $integra->where('empleado.cod_sede = cargo.cod_sede');   
+        $integra->where('empleado.codigo_cargo = cargo.codigo_cargo');   
+        $estatus = array(1,2);
+        $integra->where_in('status_nomina', $estatus);
+        $integra->where('empleado.cod_sede = 1');    
+        $integra->where('movimientos.codigo_concepto = 230'); 
+        $integra->where('movimientos.nro_control = 20150228');   
+        $integra->order_by('empleado.cedula');
+
+        return $datos;
     }
 }
  
