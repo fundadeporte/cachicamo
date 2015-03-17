@@ -24,10 +24,12 @@ class Presupuesto extends CI_Controller
         $this->load->view('footer');
     }
     
-    function ver($anio,$nro_modificacion)
+    function ver($anio,$nro_modificacion,$tipo)
     {
-        $data['cabecera'] = $this->presupuesto_model->cabecera_modificacion($anio,$nro_modificacion);
-        $data['detalles'] = $this->presupuesto_model->modificacion_detalles($anio,$nro_modificacion);
+        $data['cabecera'] = $this->presupuesto_model->cabecera_modificacion($anio,$nro_modificacion,$tipo);
+        $data['detalles'] = $this->presupuesto_model->modificacion_detalles($anio,$nro_modificacion,$tipo);
+        $data['padres'] = $this->presupuesto_model->modificacion_padres($anio,$nro_modificacion,$tipo);
+        $data['hijos'] = $this->presupuesto_model->modificacion_hijos($anio,$nro_modificacion,$tipo);
         //print_r($data);
         $this->load->view('header');
         $this->load->view('presupuesto/modificaciones/cabecera',$data);

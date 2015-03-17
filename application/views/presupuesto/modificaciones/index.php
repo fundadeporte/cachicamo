@@ -19,6 +19,7 @@
       <th>Anulada</th>
       <th>Monto</th>
       <th>Descripcion</th>
+      <th>Accion</th>
     </tr>
     <?php $i = 0; ?>
     <?php if($datos):foreach($datos as $modificacion):?>
@@ -39,6 +40,7 @@
       <td><?php echo str_replace(".", ",", $modificacion['monto']);?></td>
       <td><?php echo $modificacion['descripcion']; ?></td>
       <?php $i=$i+$modificacion['monto']; ?>
+      <td><?php echo anchor('presupuesto/ver/' . $modificacion['cod_ano'] . '/' . $modificacion['nro_modificacion'] .'/'.$modificacion['tipo'], 'Ver', 'title="Ir consultas para adminitracion"'); ?></td>
     </tr>
     <?php endforeach; else:?>
     <?php endif;?>
