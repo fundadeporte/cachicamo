@@ -325,11 +325,12 @@ group by concepto, monto_concepto
         return $datos;
 
         }
+    
 
-/*function constacia_empleados ()
-{
+    function constacia_empleados ()
+    {
 
-$integra = $this->load->database('integra', TRUE);
+        $integra = $this->load->database('integra', TRUE);
         $datos = array(
 
            'empleado.apellido_uno',  
@@ -356,10 +357,13 @@ $integra = $this->load->database('integra', TRUE);
         $integra->where('empleado.cod_sede = 1');    
         $integra->where('movimientos.codigo_concepto = 230'); 
         $integra->where('movimientos.nro_control = 20150228');   
-        $integra->order_by('empleado.cedula');
+        $integra->order_by('movimiento.nro_control desc');
+                          ('empleado.cedula');
 
         return $datos;
     }
+
+
 }
  
 /* End of file nomina_model.php */

@@ -9,6 +9,7 @@
       <li><?php echo anchor('empleado/agente', 'Agente', 'title="Empleados Alto nivel"'); ?></li>
       <li><?php echo anchor('empleado/contratado', 'Contratado', 'title="Empleados Alto nivel"'); ?></li>
       <li><?php echo anchor('empleado/lista', 'Lista', 'title="Empleado lista"'); ?></li>
+      <li><?php echo anchor('empleado/caja_ahorro', 'Empleados afiliados a la Caja ahorro', 'title="Empleado caja ahorro"'); ?></li>
     </ul>
 
   </div>

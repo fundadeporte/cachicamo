@@ -135,6 +135,69 @@ class Empleado_model extends CI_Model
         //print_r($query);
         return $query;
     }
+
+    function listado_cajaahorro()
+    {
+        /*
+  SELECT "empleado"."nombre_uno",   
+         "empleado"."nombre_dos",   
+         "empleado"."apellido_uno",   
+         "empleado"."apellido_dos",   
+         "empleado"."cedula",   
+         "empleado"."numero_cuenta",   
+         "empleado"."tipo_cuenta",   
+         "movimientos"."codigo_concepto",   
+         "empleado"."cod_sede"  
+    FROM "empleado",   
+         "movimientos"  
+   WHERE ( "movimientos"."cod_institucion" = "empleado"."cod_institucion" ) and  
+         ( "movimientos"."cod_sede" = "empleado"."cod_sede" ) and  
+         ( "movimientos"."cedula" = "empleado"."cedula" ) and  
+         ( ( "empleado"."cod_sede" in ( 1,2,3,4,5 ) ) AND  
+         ( "movimientos"."codigo_concepto" in ( 39,150 ) ) AND  
+         ( "empleado"."status_nomina" in ( 1,2 ) ) AND  
+         ( "movimientos"."nro_control" = '2015-03-15' ) )   
+GROUP BY "empleado"."nombre_uno",   
+         "empleado"."nombre_dos",   
+         "empleado"."apellido_uno",   
+         "empleado"."apellido_dos",   
+         "empleado"."cedula",   
+         "empleado"."numero_cuenta",   
+         "movimientos"."codigo_concepto",   
+         "empleado"."cod_sede",   
+         "empleado"."tipo_cuenta"   
+
+        */
+        $integra = $this->load->database('integra', TRUE);
+        $datos = array(
+                "empleado.nombre_uno as nombre",   
+                "empleado.nombre_dos ",   
+                "empleado.apellido_uno as apellido",   
+                "empleado.apellido_dos",   
+                "empleado.cedula",   
+                "empleado.numero_cuenta",   
+                "empleado.tipo_cuenta",   
+                "movimientos.codigo_concepto",   
+                "empleado.cod_sede"  
+            );
+
+        $integra->select($datos);
+        $integra->from("empleado, movimientos");
+        $integra->where( "movimientos.cod_institucion = empleado.cod_institucion" );
+        $integra->where( "movimientos.cod_sede = empleado.cod_sede" );
+        $integra->where( "movimientos.cedula = empleado.cedula" );
+        $integra->where_in( "empleado.cod_sede", array( 1,2,3,4,5 ) );
+        $integra->where_in( "movimientos.codigo_concepto", array( 39,150 ) );  
+        $integra->where_in( "empleado.status_nomina" ,array( 1,2 ) );  
+        $integra->where( "movimientos.nro_control = '2015-03-15'" );
+        
+        $integra->group_by(array("empleado.nombre_uno", "empleado.nombre_dos","empleado.apellido_uno",   
+         "empleado.apellido_dos", "empleado.cedula", "empleado.numero_cuenta","movimientos.codigo_concepto",   
+         "empleado.cod_sede", "empleado.tipo_cuenta" ));
+
+        $datos = $integra->get()->result_array();
+        return $datos;
+    }
 }
  
 /* End of file empleado_model.php */

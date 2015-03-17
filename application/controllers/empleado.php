@@ -96,6 +96,12 @@ class Empleado extends CI_Controller
         $this->load->view('empleados/lista',$data);
         $this->load->view('footer');   
    }
+
+   function caja_ahorro()
+   {
+        $data['empleados'] = $this->empleado_model->listado_cajaahorro();
+         $this->load->view('empleados/caja_ahorro',$data);
+   }
 }
  
 /* End of file Anio.php */
