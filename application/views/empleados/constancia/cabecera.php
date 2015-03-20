@@ -1,20 +1,5 @@
 <?php echo  $this->uri->segment(1, 0); ?>
-  <div>
-    menu
-    <ul>
-      <li><?php echo anchor('/', 'Principal', 'title="Pagina principal"'); ?></li>
-      <li><?php echo anchor('empleado', 'Administrativo', 'title="Empleado principal"'); ?></li>
-      <li><?php echo anchor('empleado/alto_nivel', 'Alto Nivel', 'title="Empleados Alto nivel"'); ?></li>
-      <li><?php echo anchor('empleado/obrero', 'Obrero', 'title="Empleados Alto nivel"'); ?></li>
-      <li><?php echo anchor('empleado/agente', 'Agente', 'title="Empleados Alto nivel"'); ?></li>
-      <li><?php echo anchor('empleado/contratado', 'Contratado', 'title="Empleados Alto nivel"'); ?></li>
-      <li><?php echo anchor('empleado/lista', 'Lista', 'title="Empleado lista"'); ?></li>
-      <li><?php echo anchor('empleado/caja_ahorro', 'Empleados afiliados a la Caja ahorro', 'title="Empleado caja ahorro"'); ?></li>
-      <li><?php echo anchor('empleado/egresados', 'Empleados egresados', 'title="Empleados egresados"'); ?></li>
-    </ul>
 
-  </div>
-  <div>
   <h2>Nomina </h2>
   
   <table>
@@ -32,8 +17,8 @@
       <th columns="3">acciones</th>
     </tr>
     <?php $i = 0; ?>
-    
-    <?php if($query):foreach($query as $empleado):?>
+    <pre><?php print_r($cabecera); ?></pre>
+    <?php if($datos):foreach($datos as $dato):?>
     <?php $i++; ?>
     
     <tr>
@@ -47,7 +32,7 @@
       <td><?php echo $empleado['grado'];?></td>
       <td><?php echo $empleado['paso'];?></td>
       <td><?php echo $empleado['fecha_nacimiento'];?></td>
-      <td><?php echo anchor('empleado/constacia/' . $empleado['cedula'], 'Constancia', 'title="Constancia"'); ?></td>
+      <td><?php echo anchor('empleado/editar/' . $empleado['id'], 'Editar', 'title="Editar gaceta"'); ?></td>
       <td><?php echo anchor('empleado/ver/' . $empleado['id'], 'Ver', 'title="Ver año"'); ?></td>
       <td><?php echo anchor('empleado/eliminar/' . $empleado['id'], 'Editar', 'title="Eliminar gaceta"'); ?></td>
     </tr>
