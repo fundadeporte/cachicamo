@@ -48,10 +48,10 @@
 $active_group = 'integra';
 $active_record = TRUE;
 
-$db['integra']['hostname'] = "Driver=Adaptive Server Anywhere 9.0;ENG=integra;UID=dba;PWD=sql;DBN='';LINKS=TCPIP(HOST=127.0.0.1:9000) "; 
-$db['integra']['username'] = '';
-$db['integra']['password'] = '';
-$db['integra']['database'] = '';
+$db['integra']['hostname'] = 'integra'; 
+$db['integra']['username'] = 'dba';
+$db['integra']['password'] = 'sql';
+$db['integra']['database'] = 'integra';
 $db['integra']['dbdriver'] = 'odbc';
 $db['integra']['dbprefix'] = '';
 $db['integra']['pconnect'] = TRUE;
@@ -66,10 +66,10 @@ $db['integra']['stricton'] = FALSE;
  
 $active_group = 'saacp';
 $active_record = TRUE;
-$db['saacp']['hostname'] = "Driver=Adaptive Server Anywhere 9.0;ENG=FUNDADEPORTE  ;UID=dba;PWD=sql;DBN='';LINKS=TCPIP(HOST=127.0.0.1:9000) "; 
-$db['saacp']['username'] = '';
-$db['saacp']['password'] = '';
-$db['saacp']['database'] = '';
+$db['saacp']['hostname'] = 'servidor'; 
+$db['saacp']['username'] = 'dba';
+$db['saacp']['password'] = 'sql';
+$db['saacp']['database'] = 'FUNDADEPORTE';
 $db['saacp']['dbdriver'] = 'odbc';
 $db['saacp']['dbprefix'] = '';
 $db['saacp']['pconnect'] = TRUE;
