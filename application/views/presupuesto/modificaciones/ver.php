@@ -2,6 +2,7 @@
     menu
     <ul>
       <li><?php echo anchor('welcome', 'Principal', 'title="Nueva gaceta"'); ?></li>
+	  
       <li><a href="#">Buscar</a></li>
     </ul>
 

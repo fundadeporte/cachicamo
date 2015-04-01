@@ -28,8 +28,8 @@ class Presupuesto extends CI_Controller
     {
         $data['cabecera'] = $this->presupuesto_model->cabecera_modificacion($anio,$nro_modificacion,$tipo);
         $data['detalles'] = $this->presupuesto_model->modificacion_detalles($anio,$nro_modificacion,$tipo);
-        $data['padres'] = $this->presupuesto_model->modificacion_padres($anio,$nro_modificacion,$tipo);
-        $data['hijos'] = $this->presupuesto_model->modificacion_hijos($anio,$nro_modificacion,$tipo);
+		$data['arbol'] = $this->presupuesto_model->arbol($anio,$nro_modificacion,$tipo);
+		$data['enla'] = array('anio' => $anio, 'nro_modificacion' => $nro_modificacion, 'tipo' => $tipo);
         //print_r($data);
         $this->load->view('header');
         $this->load->view('presupuesto/modificaciones/cabecera',$data);
@@ -38,21 +38,21 @@ class Presupuesto extends CI_Controller
         $this->load->view('footer');
     }
 
-    function ver_modificacion($anio, $nro_modificacion,$tipo)
+    function formato_seplan($anio, $nro_modificacion,$tipo)
      {
         
         // Se carga la libreria fpdf
 		$this->load->library('Pdf');
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf = new Pdf('P', 'mm', 'Legal', true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Israel Parra');
-        $pdf->SetTitle('Ejemplo de provincías con TCPDF');
+        $pdf->SetAuthor('Cachicamo');
+        $pdf->SetTitle('Modificacion presupuestaria');
         $pdf->SetSubject('Tutorial TCPDF');
         $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
  
 // datos por defecto de cabecera, se pueden modificar en el archivo tcpdf_config_alt.php de libraries/config
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-        $pdf->setFooterData($tc = array(0, 64, 0), $lc = array(0, 64, 128));
+        //$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
+        //$pdf->setFooterData($tc = array(0, 64, 0), $lc = array(0, 64, 128));
  
 // datos por defecto de cabecera, se pueden modificar en el archivo tcpdf_config.php de libraries/config
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -87,42 +87,248 @@ class Presupuesto extends CI_Controller
         $pdf->AddPage();
  
 //fijar efecto de sombra en el texto
-        //$pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
  
 // Establecemos el contenido para imprimir
-        $provincia = $this->input->post('provincia');
-        $provincias = $this->presupuesto_model->modificacion_detalles($anio, $nro_modificacion,$tipo);
-        foreach($provincias as $fila)
-        {
-            $prov = $fila['tipo_documento'];
-        }
+        $arbol = $this->presupuesto_model->arbol($anio,$nro_modificacion,$tipo);
+        
         //preparamos y maquetamos el contenido a crear
         $html = '';
-        $html .= "<style type=text/css>";
-        $html .= "th{color: #fff; font-weight: bold; background-color: #222}";
-        $html .= "td{background-color: #AAC7E3; color: #fff}";
-        $html .= "</style>";
-        $html .= "<h2>Localidades de ".$prov."</h2><h4>Actualmente: ".count($provincias)." localidades</h4>";
-        $html .= "<table width='100%'>";
-        $html .= "<tr><th>Id localidad</th><th>Localidades</th></tr>";
         
-        //provincias es la respuesta de la función getProvinciasSeleccionadas($provincia) del modelo
-        foreach ($provincias as $fila)
-        {
-            $id = $fila['nro_modificacion'];
-            $localidad = $fila['nro_modificacion'];
-			$pdf->AddPage();
-            $html .= "<tr><td class='id'>ó" . $id . "</td><td class='localidad'>" . $localidad . "</td></tr>";
-        }
-        $html .= "</table>";
- 
-// Imprimimos el texto con writeHTMLCell()
-        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
- 
+		$html .= '<style>
+		table { border-collapse; collapse;}
+		td, th {
+			
+			padding: 0.5rem;
+			display: inline;
+		}
+		.proyecto {
+			font-size: 6px;
+		}
+		
+		.denominacion {
+			font-size: 10px;
+			text-align: left;
+			border-left-width: 1px;
+			border-left: black;
+		}
+		
+		.monto {
+			font-size: 10px;
+			text-align: right;
+			width: 100px;
+			border-left-width: 1px;
+			border-left: black;
+			border-right-width: 1px;
+			border-right: black;
+		}
+
+		</style>';
+		$html .= "<p>Solicitud de modificación presupuestaria consolidada</p>";
+        $html .= '<table>
+    <tr>
+      <th width="30" class="proyecto">Proyecto o Accion Centraliza</th>
+      <th width="30" class="proyecto">Accion Especifica</th>
+      <th width="30" class="proyecto">Part</th>
+      <th width="30" class="proyecto">Gen</th>
+      <th width="30" class="proyecto">Esp</th>
+      <th width="30" class="proyecto">sub-esp</th>
+      <th width="25" class="proyecto">Ordinal</th>
+      <th width="350" class="proyecto">DENOMINACION</th>
+      <th class="monto">Bolivares</th>
+    </tr>';
+    if($arbol):foreach($arbol as $arbol):
+	if ($arbol['signo'] == '-'):
+		$monto = "(" . number_format($arbol['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($arbol['monto'],2,",",".") ;
+	endif;
+    $html .= '<tr>
+      <td class="denominacion">' . $arbol['proyecto'] .'</td>
+      <td class="denominacion"><b>'.  $arbol['accion_especifica'] .'</b></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'.utf8_decode($arbol['denominacion']) .'</td>
+      <td class="monto">'. $monto .'</td>
+    </tr>';
+	$html .='	<tr>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'. $arbol['hijo']['part']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['gen']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['esp']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['sub_esp'] .'</td>
+	  <td class="denominacion"></td>
+	  <td class="denominacion">'. utf8_encode($arbol['hijo']['denominacion']) .'</td>
+      <td class="monto">'. $monto.'</td>
+    </tr>';
+	if ($arbol['nieto']['signo'] == '-'):
+		$monto = "(" . number_format($arbol['nieto']['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($arbol['nieto']['monto'],2,",",".") ;
+	endif;
+	$html .='	<tr>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'. $arbol['nieto']['part']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['gen']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['esp']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['sub_esp'] .'</td>
+	  <td class="denominacion"></td>
+	  <td class="denominacion">'. utf8_encode($arbol['nieto']['denominacion']) .'</td>
+      <td class="monto">'. $monto.'</td>
+    </tr>';
+	foreach($arbol['bisnieto'] as $bisnieto): 
+	if ($bisnieto['signo'] == '-'):
+		$monto = "(" . number_format($bisnieto['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($bisnieto['monto'],2,",",".") ;
+	endif;
+	$html .= '<tr>
+      <td class="denominacion"></td>
+	  <td class="denominacion"></td>
+      <td class="denominacion">'. $bisnieto['part'] .'</td>
+      <td class="denominacion">'. $bisnieto['gen'] .'</td>
+      <td class="denominacion">'. $bisnieto['esp'] .'</td>
+      <td class="denominacion">'. $bisnieto['sub_esp'] .'</td>
+	  <td class="denominacion">'. $bisnieto['ordinal'] .'</td>
+	  <td class="denominacion">'. utf8_encode($bisnieto['denominacion']) .'</td>
+      <td class="monto">'. $monto .'</td>
+    </tr>';
+	endforeach;
+
+    endforeach; else:
+	
+    endif;
+		$html .= "</table>";
+		$pdf->Ln();
+		$pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+
+//
+	$arbol = $this->presupuesto_model->arbol($anio,$nro_modificacion,$tipo);
+    if($arbol):foreach($arbol as $arbol):
+		$pdf->AddPage();
+		$html = '';
+		$html .= '<style>
+		table { border-collapse; collapse;}
+		td, th {
+			
+			padding: 0.5rem;
+			display: inline;
+		}
+		.proyecto {
+			font-size: 6px;
+		}
+		
+		.denominacion {
+			font-size: 10px;
+			text-align: left;
+			border-left-width: 1px;
+			border-left: black;
+		}
+		
+		.monto {
+			font-size: 10px;
+			text-align: right;
+			width: 100px;
+			border-left-width: 1px;
+			border-left: black;
+			border-right-width: 1px;
+			border-right: black;
+		}
+
+		</style>';
+		$html .= "<p>Solicitud de modificación presupuestaria por unidad ejecutora</p>";
+        $html .= '<table>
+    <tr>
+      <th width="30" class="proyecto">Proyecto o Accion Centraliza</th>
+      <th width="30" class="proyecto">Accion Especifica</th>
+      <th width="30" class="proyecto">Part</th>
+      <th width="30" class="proyecto">Gen</th>
+      <th width="30" class="proyecto">Esp</th>
+      <th width="30" class="proyecto">sub-esp</th>
+      <th width="25" class="proyecto">Ordinal</th>
+      <th width="350" class="proyecto">DENOMINACION</th>
+      <th class="monto">Bolivares</th>
+    </tr>';
+	if ($arbol['signo'] == '-'):
+		$monto = "(" . number_format($arbol['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($arbol['monto'],2,",",".") ;
+	endif;
+    $html .= '<tr>
+      <td class="denominacion">' . $arbol['proyecto'] .'</td>
+      <td class="denominacion"><b>'.  $arbol['accion_especifica'] .'</b></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'.utf8_decode($arbol['denominacion']) .'</td>
+      <td class="monto">'. $monto .'</td>
+    </tr>';
+	$html .='	<tr>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'. $arbol['hijo']['part']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['gen']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['esp']. '</td>
+      <td class="denominacion">'. $arbol['hijo']['sub_esp'] .'</td>
+	  <td class="denominacion"></td>
+	  <td class="denominacion">'. utf8_encode($arbol['hijo']['denominacion']) .'</td>
+      <td class="monto">'. $monto.'</td>
+    </tr>';
+	if ($arbol['nieto']['signo'] == '-'):
+		$monto = "(" . number_format($arbol['nieto']['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($arbol['nieto']['monto'],2,",",".") ;
+	endif;
+	$html .='	<tr>
+      <td class="denominacion"></td>
+      <td class="denominacion"></td>
+      <td class="denominacion">'. $arbol['nieto']['part']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['gen']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['esp']. '</td>
+      <td class="denominacion">'. $arbol['nieto']['sub_esp'] .'</td>
+	  <td class="denominacion"></td>
+	  <td class="denominacion">'. utf8_encode($arbol['nieto']['denominacion']) .'</td>
+      <td class="monto">'. $monto.'</td>
+    </tr>';
+	foreach($arbol['bisnieto'] as $bisnieto): 
+	if ($bisnieto['signo'] == '-'):
+		$monto = "(" . number_format($bisnieto['monto'],2,",",".") . ")";
+	else:
+		$monto = number_format($bisnieto['monto'],2,",",".") ;
+	endif;
+	$html .= '<tr>
+      <td class="denominacion"></td>
+	  <td class="denominacion"></td>
+      <td class="denominacion">'. $bisnieto['part'] .'</td>
+      <td class="denominacion">'. $bisnieto['gen'] .'</td>
+      <td class="denominacion">'. $bisnieto['esp'] .'</td>
+      <td class="denominacion">'. $bisnieto['sub_esp'] .'</td>
+	  <td class="denominacion">'. $bisnieto['ordinal'] .'</td>
+	  <td class="denominacion">'. utf8_encode($bisnieto['denominacion']) .'</td>
+      <td class="monto">'. $monto .'</td>
+    </tr>';
+	endforeach;
+	$html .= "</table>";
+	$pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+    endforeach; 
+	
+	else:
+	
+    endif;
+		
+//
+
 // ---------------------------------------------------------
 // Cerrar el documento PDF y preparamos la salida
 // Este método tiene varias opciones, consulte la documentación para más información.
-        $nombre_archivo = utf8_decode("Localidades de ".$prov.".pdf");
+        $nombre_archivo = utf8_decode("modificacion_$anio$nro_modificacion$tipo.pdf");
         $pdf->Output($nombre_archivo, 'I');
     
     }

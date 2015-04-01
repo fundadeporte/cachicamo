@@ -2,6 +2,8 @@
     menu
     <ul>
       <li><?php echo anchor('welcome', 'Principal', 'title="Nueva gaceta"'); ?></li>
+	  <li><?php echo anchor('/presupuesto/formato_seplan/'.$enla['anio']."/".$enla['nro_modificacion']."/".$enla['tipo'], 'Formato Seplan consolidada', 'title="Nueva gaceta"'); ?></li>
+	  <li><?php echo anchor('/presupuesto/formato_seplan/'.$enla['anio']."/".$enla['nro_modificacion']."/".$enla['tipo'], 'Formato Seplan por unidad ejecutora', 'title="Nueva gaceta"'); ?></li>
       <li><a href="#">Buscar</a></li>
     </ul>
 

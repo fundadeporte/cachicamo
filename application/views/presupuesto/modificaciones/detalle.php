@@ -1,64 +1,8 @@
-  <div><h2>Padres</h2>
-    <?php echo count($padres); ?>
-    <table>
-    <tr>
-      <th>Proyecto o Accion Centraliza</th>
-      <th>Accion Especifica</th>
-      <th>Descripcion</th>
-      <th>Monto</th>
-    </tr>
-    <?php if($padres):foreach($padres as $padre):?>
-    <tr>
-      <td><?php echo $padre['cod_programa'];?></td>
-      <td><?php echo $padre['cod_act_obra'];?></td>
-      <td><?php echo $padre['descripcion'];?></td>
-      <td><?php 
-          if ($padre['signo'] == "+"):
-            echo number_format($padre['monto'],2,',','.');
-          else:
-            echo "(".number_format($padre['monto'],2,',','.').")";
-          endif;
-
-      ?></td>
-    </tr>
-    <?php endforeach; else:?>
-    <?php endif;?>
-  </table>
-  </div>
-  <div><h2>Hijos</h2>
-    <?php echo count($hijos); ?>
-        <table>
-    <tr>
-      <th>Proyecto o Accion Centraliza</th>
-      <th>Accion Especifica</th>
-      <th>Cuenta</th>
-      <th>Hija</th>
-      <th>Descripcion</th>
-      <th>Monto</th>
-    </tr>
-    <?php if($hijos):foreach($hijos as $hijo):?>
-    <tr>
-      <td><?php echo $hijo['cod_programa'];?></td>
-      <td><?php echo $hijo['cod_act_obra'];?></td>
-      <td><?php echo $hijo['cuenta'];?></td>
-      <td><?php echo $hijo['hija'];?></td>
-      <td><?php echo $hijo['descripcion'];?></td>
-      <td><?php 
-          if ($hijo['signo'] == "+"):
-            echo number_format($hijo['monto'],2,',','.');
-          else:
-            echo "(".number_format($hijo['monto'],2,',','.').")";
-          endif;
-
-      ?></td>
-    </tr>
-    <?php endforeach; else:?>
-    <?php endif;?>
-  </table>
-  </div>
-  <div>
-  <h2>Nietos</h2>
-  <?php echo count($detalles) ?>
+ <div>
+  <h2>Detalles</h2>
+  <?php /*echo "<pre>";
+  print_r($arbol);
+echo "</pre>";*/  ?>
   <table>
     <tr>
       <th>Proyecto o Accion Centraliza</th>
@@ -71,27 +15,82 @@
       <th>DENOMINACION</th>
       <th>Bolivares</th>
     </tr>
-    <?php if($detalles):foreach($detalles as $detalle):?>
+    <?php if($arbol):foreach($arbol as $arbol):?>
     <tr>
-      <td><?php echo $detalle['programa'];?></td>
-      <td><?php echo $detalle['accion_especifica'];?></td>
-      <td><?php echo substr($detalle['cuenta'], 0,3);?></td>
-      <td><?php echo substr($detalle['cuenta'], 3,-4);?></td>
-      <td><?php echo substr($detalle['cuenta'], 5,-2);?></td>
-      <td><?php echo substr($detalle['cuenta'], 7);?></td>
-      <td><?php echo $detalle['ordinal'];?></td>
-      <td><?php echo $detalle['denominacion'];?></td>
-      <td><?php 
-          if ($detalle['signo'] == "+"):
-            echo $detalle['monto'];
+      <td><?php echo $arbol['proyecto'];?></td>
+      <td><?php echo $arbol['accion_especifica'];?></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><?php echo $arbol['denominacion'];?></td>
+      <td align="right"><?php 
+          if ($arbol['signo'] == "+"):
+            echo number_format($arbol['monto'],2,',','.');
           else:
-            echo "(".$detalle['monto'].")";
+            echo "(".number_format($arbol['monto'],2,',','.').")";
           endif;
 
       ?></td>
     </tr>
+	<tr>
+      <td></td>
+      <td></td>
+      <td><?php echo $arbol['hijo']['part'];?></td>
+      <td><?php echo $arbol['hijo']['gen'];?></td>
+      <td><?php echo $arbol['hijo']['esp'];?></td>
+      <td><?php echo $arbol['hijo']['sub_esp'];?></td>
+	  <td></td>
+	  <td><?php echo $arbol['hijo']['denominacion'];?></td>
+      <td align="right"><?php 
+          if ($arbol['hijo']['signo'] == "+"):
+            echo number_format($arbol['hijo']['monto'],2,',','.');
+          else:
+            echo "(". number_format($arbol['hijo']['monto'],2,',','.').")";
+          endif;
+
+      ?></td>
+    </tr>
+	<tr>
+      <td></td>
+      <td></td>
+      <td><?php echo $arbol['nieto']['part'];?></td>
+      <td><?php echo $arbol['nieto']['gen'];?></td>
+      <td><?php echo $arbol['nieto']['esp'];?></td>
+      <td><?php echo $arbol['nieto']['sub_esp'];?></td>
+	  <td></td>
+	  <td><?php echo $arbol['nieto']['denominacion'];?></td>
+      <td align="right"><?php 
+          if ($arbol['nieto']['signo'] == "+"):
+            echo number_format($arbol['nieto']['monto'],2,',','.');
+          else:
+            echo "(".number_format($arbol['nieto']['monto'],2,',','.').")";
+          endif;
+
+      ?></td>
+    </tr>
+	<?php foreach($arbol['bisnieto'] as $bisnieto): ?>
+	<tr>
+      <td></td>
+	  <td></td>
+      <td><?php echo $bisnieto['part'];?></td>
+      <td><?php echo $bisnieto['gen'];?></td>
+      <td><?php echo $bisnieto['esp'];?></td>
+      <td><?php echo $bisnieto['sub_esp'];?></td>
+	  <td><?php echo $bisnieto['ordinal'];?></td>
+	  <td><?php echo $bisnieto['denominacion'];?></td>
+      <td align="right"><?php 
+          if ($bisnieto['signo'] == "+"):
+            echo number_format($bisnieto['monto'],2,',','.');
+          else:
+            echo "(".number_format($bisnieto['monto'],2,',','.').")";
+          endif;
+
+      ?></td>
+    </tr>
+	<?php endforeach; ?>
     <?php endforeach; else:?>
     <?php endif;?>
   </table>
   </div>
-  
